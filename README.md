@@ -11,10 +11,10 @@
 `GET /users/`  
 
 - Get user via id  
-`GET /users/{user_id}  
+`GET /users/{user_id}`  
 
 - Add a new user  
 `POST /users/`
 
 - Delete a user  
-`DELETE /users/{user_id}  
+`DELETE /users/{user_id}`  
