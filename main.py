@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User
-from app.schema import UserCreate, UserUpdate
+from app.schema import UserCreate, UserUpdate, UserLogin
 
 app = FastAPI()
 
@@ -13,11 +13,24 @@ def get_all_users(db: Session = Depends(get_db)):
 
 
 @app.get("/users/{user_id}")
-def get_user_by_email(user_id: int, db: Session = Depends(get_db)):
+def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if user:
         return user
     raise HTTPException(status_code=404, detail="User not found")
+
+
+@app.post("/login/")
+def login_user(login: UserLogin, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == login.email).first()
+    if user:
+        pwd = user.password
+        if pwd != login.password:
+            raise HTTPException(status_code=401, detail="Password is incorrect")
+        else:
+            return user
+    else:
+        raise HTTPException(status_code=404, detail="User not found")
 
 
 @app.post("/users/")
