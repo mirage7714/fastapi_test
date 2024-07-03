@@ -1,8 +1,7 @@
-FROM ubuntu
+FROM python:3.10
 
-RUN apt-get update
-RUN yes | apt-get install python3 pip unzip 
-ADD fastapi_test.zip /root/home/fastapi_test.zip
-RUN unzip /root/home/fastapi_test.zip
-RUN cd /root/home/fastapi_test && pip install -r ./requirements.txt
-CMD [uvicorn /root/home/fastapi_test/main:app --reload]
+WORKDIR /code
+COPY ./requirements.txt /code/requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY ./app /code/app
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
